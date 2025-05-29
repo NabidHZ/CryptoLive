@@ -1,4 +1,4 @@
-package com.cryptolive.cryptolive;
+package com.cryptolive;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

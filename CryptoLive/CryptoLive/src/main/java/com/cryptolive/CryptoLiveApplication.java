@@ -1,4 +1,4 @@
-package com.cryptolive.cryptolive;
+package com.cryptolive;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
