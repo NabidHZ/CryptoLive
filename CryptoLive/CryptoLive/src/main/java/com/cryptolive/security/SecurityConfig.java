@@ -1,4 +1,3 @@
-
 package com.cryptolive.security;
 
 import com.cryptolive.service.CustomOAuth2UserService;
@@ -29,12 +28,13 @@ public class SecurityConfig {
                         .requestMatchers("/login", "/api/login", "/register", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
+                        .defaultSuccessUrl("/index.html", true)
                 );
         return http.build();
     }

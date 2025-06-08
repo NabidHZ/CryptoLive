@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+  <meta charset="UTF-8">
+  <title>Login con Google</title>
+  <script>
+    // Ejemplo: si tienes un JWT en localStorage, redirige
+    if (localStorage.getItem('jwt')) {
+      window.location.href = '/index.html';
+    }
+  </script>
 </head>
 <body>
-
+<h2>Iniciar sesión con Google</h2>
+<a href="/oauth2/authorization/google">
+  <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+       alt="Iniciar sesión con Google"/>
+</a>
 </body>
 </html>
