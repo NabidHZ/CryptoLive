@@ -1,0 +1,1 @@
+acceder a MySQL docker exec -it cryptolive-mysql mysql -uroot -proot -e "SHOW DATABASES;"
