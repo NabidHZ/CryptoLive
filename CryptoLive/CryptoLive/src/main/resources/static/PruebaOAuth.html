@@ -2,19 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Login con Google</title>
-  <script>
-    // Ejemplo: si tienes un JWT en localStorage, redirige
-    if (localStorage.getItem('jwt')) {
-      window.location.href = '/index.html';
-    }
-  </script>
+  <title>CryptoLive - Login y Registro</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .container { max-width: 350px; margin: auto; }
+    form { margin-bottom: 20px; }
+    input { display: block; margin: 8px 0; width: 100%; padding: 8px; }
+    button { width: 100%; padding: 10px; }
+    .divider { text-align: center; margin: 20px 0; }
+  </style>
 </head>
 <body>
-<h2>Iniciar sesión con Google</h2>
-<a href="/oauth2/authorization/google">
-  <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
-       alt="Iniciar sesión con Google"/>
-</a>
+<div class="container">
+  <h2>Iniciar sesión</h2>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Contraseña" required>
+    <button type="submit">Entrar (JWT)</button>
+  </form>
+
+  <div class="divider">o</div>
+
+  <a href="/oauth2/authorization/google">
+    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+         alt="Iniciar sesión con Google" style="width:100%;">
+  </a>
+
+  <div class="divider">¿No tienes cuenta?</div>
+
+  <h2>Registrarse</h2>
+  <form id="registerForm">
+    <input type="email" id="registerEmail" placeholder="Email" required>
+    <input type="password" id="registerPassword" placeholder="Contraseña" required>
+    <button type="submit">Registrarse</button>
+  </form>
+  <div id="msg"></div>
+</div>
+<script>
+  // Registro
+  document.getElementById('registerForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    try {
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      });
+      const text = await res.text();
+      document.getElementById('msg').innerText = text;
+    } catch {
+      document.getElementById('msg').innerText = 'Error en el registro';
+    }
+  };
+
+  // Login
+  document.getElementById('loginForm').onsubmit = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`
+      });
+      if (res.ok) {
+        const jwt = await res.text();
+        localStorage.setItem('jwt', jwt);
+        window.location.href = '/index.html';
+      } else {
+        document.getElementById('msg').innerText = 'Credenciales inválidas';
+      }
+    } catch {
+      document.getElementById('msg').innerText = 'Error en el login';
+    }
+  };
+</script>
 </body>
 </html>
