@@ -22,7 +22,10 @@ public class AuthController {
             return ResponseEntity.status(401).body(new ErrorResponse(e.getMessage()));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(new ErrorResponse("Error de autenticación"));
-        }
+        }/*Un RespopnseEntity es una clse de spring que representa una repuesta HTTP completa
+        el código de estado, los encabezados y el cuerpo de la respuesta. Permite controlar exactamente qué se
+        devuelve al cliente desde un controlador REST,
+        como el estado (por ejemplo, 200, 401, 400), los datos (en formato JSON, texto, etc.) */
     }
 
     @PostMapping("/register")
