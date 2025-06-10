@@ -4,50 +4,41 @@ package com.cryptolive.service;
 import com.cryptolive.model.User;
 import com.cryptolive.repository.UserRepository;
 import com.cryptolive.security.JwtUtil;
+import com.cryptolive.execption.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Clase de servicio para gestionar las operaciones relacionadas con la autenticación.
- * Proporciona métodos para el inicio de sesión y el registro de usuarios.
- */
 @Service
 public class AuthService {
 
     @Autowired
-    private UserRepository userRepository; // Repositorio para acceder a los datos de los usuarios.
+    private UserRepository userRepository;
     @Autowired
-    private PasswordEncoder passwordEncoder; // Codificador para encriptar contraseñas.
+    private PasswordEncoder passwordEncoder;
     @Autowired
-    private JwtUtil jwtUtil; // Utilidad para generar tokens JWT.
+    private JwtUtil jwtUtil;
 
-    /**
-     * Autentica a un usuario basado en su correo electrónico y contraseña.
-     *
-     * @param email El correo electrónico del usuario que intenta iniciar sesión.
-     * @param password La contraseña proporcionada por el usuario.
-     * @return Un token JWT si la autenticación es exitosa.
-     * @throws RuntimeException Si las credenciales son inválidas.
-     */
     public String login(String email, String password) {
         User user = userRepository.findByEmail(email);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return jwtUtil.generateToken(user.getEmail());
+        if (user == null) {
+            throw new UserNotFoundException("No existe ningún usuario con ese correo electrónico");
         }
-        throw new RuntimeException("Credenciales inválidas");
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IncorrectPasswordException("La contraseña no es correcta");
+        }
+        return jwtUtil.generateToken(user.getEmail());
     }
 
-    /**
-     * Registra un nuevo usuario en el sistema.
-     *
-     * @param email El correo electrónico del usuario que se desea registrar.
-     * @param password La contraseña para el nuevo usuario.
-     * @throws RuntimeException Si el usuario ya existe.
-     */
     public void register(String email, String password) {
         if (userRepository.findByEmail(email) != null) {
-            throw new RuntimeException("El usuario ya existe");
+            throw new UserAlreadyExistsException("El usuario ya existe");
+        }
+        if (!email.contains("@") || !email.contains(".")) {
+            throw new InvalidEmailException("El email no tiene un formato válido");
+        }
+        if (password.length() < 8) {
+            throw new WeakPasswordException("La contraseña es demasiado débil");
         }
         User user = new User();
         user.setEmail(email);
