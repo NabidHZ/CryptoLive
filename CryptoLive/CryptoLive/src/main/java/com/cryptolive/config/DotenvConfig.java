@@ -13,7 +13,7 @@ public class DotenvConfig {
 
     /**
      * Método que se ejecuta después de la construcción del bean.
-     * Carga las variables de entorno desde el archivo `.env` y las establece como propiedades del sistema.
+     * Cargaaas las variables de entorno desde el archivo `.env` y las establece como propiedades del sistema.
      */
     @PostConstruct
     public void loadEnv() {
