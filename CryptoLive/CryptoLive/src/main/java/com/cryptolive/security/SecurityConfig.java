@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService)
                         )
-                        .defaultSuccessUrl("/index.html", false) // Cambiar `true` a `false` para evitar redirección automática.
+                        .defaultSuccessUrl("http://localhost:5173/", true) // Cambiar la URL de redirección.
                 );
         return http.build();
     }
