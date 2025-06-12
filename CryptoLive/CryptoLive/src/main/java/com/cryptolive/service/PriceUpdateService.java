@@ -20,10 +20,14 @@ public class PriceUpdateService {
     @Autowired
     private PortfolioService portfolioService;
 
-    @Scheduled(fixedRate = 30000) // Cada 10 segundos.
+    @Scheduled(fixedRate = 30000)
     public void refreshPrices() {
+        System.out.println("Ejecutando refreshPrices..."); // Registro para verificar ejecución
         List<String> coinIds = portfolioRepository.findDistinctCoinIds();
+        System.out.println("Coin IDs encontrados: " + coinIds); // Registro para depuración
+
         Map<String, BigDecimal> prices = portfolioService.getCryptoPrices(coinIds);
+        System.out.println("Precios obtenidos: " + prices); // Registro para depuración
 
         portfolioRepository.findAllByCoinIdIn(coinIds).forEach(item -> {
             BigDecimal price = prices.get(item.getCoinId());
@@ -31,6 +35,7 @@ public class PriceUpdateService {
                 item.setLastPrice(price);
                 item.setLastUpdated(LocalDateTime.now());
                 portfolioRepository.save(item);
+                System.out.println("Actualizado: " + item.getCoinId() + " con precio " + price); // Registro para depuración
             }
         });
     }
