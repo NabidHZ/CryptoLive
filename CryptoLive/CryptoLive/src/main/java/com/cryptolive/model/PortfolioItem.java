@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
+@Entity //Marac esta clase como entidad en la base datos
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "coinId"}))
 public class PortfolioItem {
     @Id

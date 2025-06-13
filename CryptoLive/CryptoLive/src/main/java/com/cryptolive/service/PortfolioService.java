@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
+
+
+//Contien la logica de negocio para gestionar el portafolio de criptomonedas de los usuarios ahce un CRUD
 @Service
 public class PortfolioService {
 
@@ -61,6 +65,7 @@ public class PortfolioService {
         portfolioRepository.delete(item);
     }
 
+    //Lamada ala API de coingeko para consultar los precios de los activos en el portafolio
     public Map<String, BigDecimal> getCryptoPrices(List<String> coinIds) {
         String ids = String.join(",", coinIds);
         String url = "/simple/price?ids=" + ids + "&vs_currencies=usd";
