@@ -16,6 +16,8 @@ public class PortfolioController {
     @Autowired
     private PortfolioService portfolioService;
 
+    //Toda la logica esta en PortafolioService, esto solo salen los endpoints que se consumiran en el front
+
     // Endpoint para obtener el portafolio de un usuario
     @PostMapping
     public ResponseEntity<?> getPortfolio(@RequestBody Map<String, String> requestBody) {
