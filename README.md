@@ -89,21 +89,21 @@ cryptolive-backend/
 * Abre IntelliJ IDEA → `New → Project`
 * Elige **Spring Initializr** y configura:
 
-  * **Group**: `com.nabid`
-  * **Artifact**: `cryptolive`
-  * **Nombre**: `CryptoLive`
-  * **Tipo**: Maven
-  * **Versión de Java**: 17
-  * **Dependencias**:
+    * **Group**: `com.nabid`
+    * **Artifact**: `cryptolive`
+    * **Nombre**: `CryptoLive`
+    * **Tipo**: Maven
+    * **Versión de Java**: 17
+    * **Dependencias**:
 
-    * Spring Web
-    * Spring Data JPA
-    * Spring Security
-    * Spring WebSocket
-    * MySQL Driver
-    * Lombok (opcional)
-    * Spring Boot DevTools
-    * Spring Boot Actuator
+        * Spring Web
+        * Spring Data JPA
+        * Spring Security
+        * Spring WebSocket
+        * MySQL Driver
+        * Lombok (opcional)
+        * Spring Boot DevTools
+        * Spring Boot Actuator
 
 ### 2. Docker Compose para MySQL
 
