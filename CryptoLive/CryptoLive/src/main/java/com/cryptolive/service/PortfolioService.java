@@ -6,15 +6,16 @@ import com.cryptolive.repository.PortfolioRepository;
 import com.cryptolive.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
+import java.util.stream.Collectors;
 
 
 //Contien la logica de negocio para gestionar el portafolio de criptomonedas de los usuarios ahce un CRUD
@@ -86,5 +87,43 @@ public class PortfolioService {
         });
 
         return prices;
+    }
+
+
+    public Map<String, Object> getPortfolioResponse(String email) {
+        List<PortfolioItem> portfolioItems = this.getPortfolioByUser(email);
+
+        //Cuando no hay monedas en el portafolio
+        if (portfolioItems.isEmpty()) {
+            throw new RuntimeException("El portafolio está vacío");
+        }
+
+        BigDecimal saldoActual = calculateSaldoActual(portfolioItems);
+        List<Map<String, Object>> monedas = buildMonedasResponse(portfolioItems);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("saldoActual", saldoActual);
+        response.put("monedas", monedas);
+
+        return response;
+    }
+
+    // Calcula el saldo actual del portafolio sumando el valor de cada moneda
+    private BigDecimal calculateSaldoActual(List<PortfolioItem> portfolioItems) {
+        return portfolioItems.stream()
+                .map(item -> item.getQuantity().multiply(item.getLastPrice() != null ? item.getLastPrice() : BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    // Construye la respuesta de las monedas en el portafolio
+    private List<Map<String, Object>> buildMonedasResponse(List<PortfolioItem> portfolioItems) {
+        return portfolioItems.stream().map(item -> {
+            Map<String, Object> moneda = new HashMap<>();
+            moneda.put("coinId", item.getCoinId());
+            moneda.put("quantity", item.getQuantity());
+            moneda.put("lastPrice", item.getLastPrice());
+            moneda.put("lastUpdated", item.getLastUpdated());
+            return moneda;
+        }).collect(Collectors.toList());
     }
 }

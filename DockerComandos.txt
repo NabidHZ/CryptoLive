@@ -9,3 +9,9 @@ acceder a MySQL docker exec -it cryptolive-mysql mysql -uroot -proot -e "SHOW DA
 POSTMAN
 http://localhost:8080/login
 http://localhost:8080/register
+
+
+Kill 8080
+netstat -ano | findstr :8080
+
+taskkill /PID 4976 /F

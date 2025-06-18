@@ -25,25 +25,10 @@ public class PortfolioController {
     @PostMapping
     public ResponseEntity<?> getPortfolio(@RequestBody Map<String, String> requestBody) {
         String email = requestBody.get("email");
-        List<PortfolioItem> portfolioItems = portfolioService.getPortfolioByUser(email);
-
-        // Calcular el saldo actual sumando (quantity * lastPrice) de cada moneda
-        BigDecimal saldoActual = portfolioItems.stream()
-                .map(item -> item.getQuantity().multiply(item.getLastPrice() != null ? item.getLastPrice() : BigDecimal.ZERO))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        // Construir la respuesta
-        Map<String, Object> response = new HashMap<>();
-        response.put("saldoActual", saldoActual);
-        response.put("monedas", portfolioItems.stream().map(item -> {
-            Map<String, Object> moneda = new HashMap<>();
-            moneda.put("coinId", item.getCoinId());
-            moneda.put("quantity", item.getQuantity());
-            moneda.put("lastPrice", item.getLastPrice());
-            moneda.put("lastUpdated", item.getLastUpdated());
-            return moneda;
-        }).collect(Collectors.toList()));
-
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.badRequest().body("El email es obligatorio");
+        }
+        Map<String, Object> response = portfolioService.getPortfolioResponse(email);
         return ResponseEntity.ok(response);
     }
 }
