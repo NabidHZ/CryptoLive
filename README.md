@@ -13,7 +13,7 @@ CryptoLive ofrece:
 - **Autenticación**: Registro y login de usuarios con JWT y Google OAuth2.
 - **Gestión de portafolio**: Añadir, editar y eliminar criptomonedas indicando la cantidad que posee el usuario.
 - **Cálculo de valor**: Obtiene precios actuales desde la API pública de CoinGecko y calcula el valor de cada moneda y del portafolio.
-- **Actualización automática**: Tarea programada que refresca precios cada 10 segundos y actualiza el valor en la base de datos.
+- **Proceso BATCH**: Tarea programada que refresca precios cada 30 segundos y actualiza el valor en la base de datos.
 - **WebSocket**: Emite cotizaciones en tiempo real a clientes suscritos (opcional para frontend dinámico).
 - **Historial y métricas**: Registro de operaciones y métricas de salud con Actuator, Micrometer, Prometheus y Grafana.
 
