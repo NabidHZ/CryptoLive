@@ -44,11 +44,11 @@ public class JwtUtil {
      */
     public String generateToken(String email) {
         return Jwts.builder()
-                .setSubject(email)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+                .setSubject(email) // El email del usuario como subject.
+                .setIssuedAt(new Date()) // Fecha de emisión.
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs)) // Expiración (1 día).
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // Firma con clave secreta.
+                .compact(); // Genera el token.
     }
 
     /**
@@ -59,11 +59,11 @@ public class JwtUtil {
      */
     public String getEmailFromToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(getSigningKey()) // Usa la clave secreta.
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(token) // Parsear el token.
                 .getBody()
-                .getSubject();
+                .getSubject(); // Extraer el subject (email).
     }
 
     /**
@@ -74,10 +74,13 @@ public class JwtUtil {
      */
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
-            return true;
+            Jwts.parserBuilder()
+                    .setSigningKey(getSigningKey()) // Usa la clave secreta para validar.
+                    .build()
+                    .parseClaimsJws(token); // Intenta parsear el token.
+            return true; // Si no hay excepciones, el token es válido.
         } catch (JwtException e) {
-            return false;
+            return false; // Si hay una excepción, el token no es válido.
         }
     }
 }

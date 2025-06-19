@@ -64,12 +64,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // Si el email es válido y no hay autenticación en el contexto, la establece.
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(email, null, null);
+                    new UsernamePasswordAuthenticationToken(email, null, null); // Crea un token de autenticación.
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            SecurityContextHolder.getContext().setAuthentication(authToken); // Establece el contexto de seguridad.
         }
 
         // Continúa con el siguiente filtro en la cadena.
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); // Continúa con el siguiente filtro.
     }
 }
