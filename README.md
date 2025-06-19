@@ -2,177 +2,214 @@
 
 **Simulador de criptomonedas en tiempo real**
 
-CryptoLive es una plataforma backend desarrollada con Java y Spring Boot que permite a los usuarios:
-
-* Consultar cotizaciones de criptomonedas en tiempo real vía WebSocket
-* Simular compras y ventas de criptos en una cartera virtual
-* Ver historial de operaciones y estado de la cartera
+CryptoLive es un backend desarrollado con Java 17 y Spring Boot que permite a los usuarios registrados gestionar un portafolio virtual de criptomonedas, con datos de precios obtenidos de CoinGecko y actualizados periódicamente.
 
 ---
 
 ## 🧠 Resumen del Proyecto
 
-CryptoLive es una **aplicación backend profesional** centrada en la simulación de inversiones en criptomonedas con datos en **tiempo real**. Desarrollado con **Java 17** y **Spring Boot**, el sistema permite a los usuarios consultar precios actualizados desde la API pública de CoinGecko, realizar operaciones virtuales (compras/ventas), y gestionar su propia cartera de criptos.
+CryptoLive ofrece:
 
-La arquitectura del sistema está orientada a microservicios, modularizada por capas (controlador, servicio, repositorio) y diseñada con buenas prácticas como el uso de **caché (Redis)**, **autenticación con JWT**, pruebas unitarias/integración y despliegue automatizado.
+- **Autenticación**: Registro y login de usuarios con JWT y Google OAuth2.
+- **Gestión de portafolio**: Añadir, editar y eliminar criptomonedas indicando la cantidad que posee el usuario.
+- **Cálculo de valor**: Obtiene precios actuales desde la API pública de CoinGecko y calcula el valor de cada moneda y del portafolio.
+- **Proceso BATCH**: Tarea programada que refresca precios cada 30 segundos y actualiza el valor en la base de datos.
+- **WebSocket**: Emite cotizaciones en tiempo real a clientes suscritos  (frontend dinámico).
+- **Historial y métricas**: Registro de operaciones y métricas de salud con Actuator, Micrometer, Prometheus y Grafana.
 
-Entre las tecnologías clave empleadas se encuentran:
-
-* **Spring WebSocket**: para enviar cotizaciones en tiempo real a los clientes.
-* **Spring Security + JWT**: para autenticación y autorización por roles (`ROLE_USER`, `ROLE_ADMIN`).
-* **MySQL (en Docker)**: como base de datos relacional.
-* **Flyway**: para gestionar migraciones de esquema.
-* **Redis**: como sistema de caché para reducir llamadas innecesarias a la API externa.
-* **Resilience4j**: implementando retry y circuit breaker en las llamadas a CoinGecko.
-* **Micrometer + Prometheus + Grafana**: para monitorización avanzada y métricas de salud.
-* **JUnit + Mockito + Testcontainers**: para pruebas unitarias y de integración reales.
-* **GitHub Actions**: para integración y despliegue continuo (CI/CD).
-
-### 🎯 Objetivos del proyecto
-
-* Brindar una experiencia de simulación realista de inversión en criptomonedas.
-* Aplicar buenas prácticas en arquitectura, seguridad, resiliencia y pruebas.
-* Exponer endpoints REST y WebSocket eficientes, seguros y documentados (OpenAPI).
-* Construir un backend moderno y profesional como ejemplo de referencia.
-
-Con **CryptoLive**, no solo tendrás una plataforma para aprender o testear tu estrategia de inversión en criptomonedas, sino también una base sólida para construir un backend escalable, robusto y mantenible.
+La arquitectura está modularizada en capas (`controller`, `service`, `repository`, `model`, `security`, `websocket`, etc.) y emplea buenas prácticas como caché con Redis, migraciones con Flyway, resiliencia con Resilience4j, pruebas unitarias e integración con Testcontainers, y despliegue en Docker.
 
 ---
 
-## 🛠️ Tecnologías principales
+## 🛠️ Tecnologías Principales
 
-* **Java 17+**
-* **Spring Boot** (WebFlux, Security, Data JPA)
-* **WebSocket** (para cotizaciones en tiempo real)
-* **MySQL (Docker)**
-* **Redis (caché de precios)**
-* **Flyway** (migraciones SQL)
-* **JWT (autenticación)**
-* **Docker / Docker Compose**
-* **OpenAPI / Swagger UI**
-* **Resilience4j** (tolerancia a fallos)
-* **JUnit 5 + Mockito + Testcontainers**
-* **Micrometer + Prometheus + Grafana**
+- **Java 17+** y **Spring Boot** (WebFlux, Security, Data JPA)
+- **MySQL** en Docker (o alternativa MongoDB, evaluado según necesidades)
+- **Redis** para cache de precios
+- **Spring Security + JWT** y **OAuth2 (Google)**
+- **CoinGecko API** (llamadas agrupadas para optimizar límites)
+- **Spring WebSocket** para envío en tiempo real
+- **JUnit 5 + Mockito + Testcontainers** para pruebas
+- **Swagger/OpenAPI** para documentar la API
+- **GitHub Actions** para CI/CD
+- **Docker / Docker Compose** para orquestar servicios
 
 ---
 
-## 📂 Estructura del proyecto
+## 📂 Estructura del Proyecto
 
 ```bash
 cryptolive-backend/
-├── docker-compose.yml
-├── Dockerfile
-├── pom.xml
+├── docker-compose.yml       # MySQL, Redis, otros servicios
+├── Dockerfile               # Construcción de la imagen de la aplicación
+├── pom.xml                  # Dependencias Maven
 └── src
     ├── main
     │   ├── java/com/tuusuario/cryptolive
     │   │   ├── CryptoLiveApplication.java
-    │   │   ├── config/
-    │   │   ├── controller/
-    │   │   ├── service/
-    │   │   ├── model/
-    │   │   ├── repository/
-    │   │   ├── security/
-    │   │   └── websocket/
-    │   └── resources/
-    │       ├── application.yml
-    │       └── db/migrations/
+    │   │   ├── config/       # Configuraciones (WebClient, WebSocket, Security)
+    │   │   ├── controller/   # Controladores REST y WebSocket
+    │   │   ├── service/      # Lógica de negocio
+    │   │   ├── model/        # Entidades JPA / Documentos y DTOs
+    │   │   ├── repository/   # Repositorios de datos
+    │   │   ├── security/     # JWT, OAuth2, filtros y utilidades
+    │   │   └── websocket/    # Configuración y mensajería STOMP
+    │   └── resources
+    │       ├── application.yml  # Configuración de Spring, BD, OAuth2, JWT
+    │       └── db/migrations    # Scripts Flyway
     └── test/java/com/tuusuario/cryptolive
 ```
 
 ---
 
-## 🚀 Primeros pasos con IntelliJ
+## 🚀 Configuración y Primeros Pasos
 
-### 1. Crear proyecto con Spring Initializr
+1. **Clonar el repositorio**
 
-* Abre IntelliJ IDEA → `New → Project`
-* Elige **Spring Initializr** y configura:
+   ```bash
+   git clone https://github.com/tuusuario/cryptolive-backend.git
+   cd cryptolive-backend
+   ```
 
-    * **Group**: `com.nabid`
-    * **Artifact**: `cryptolive`
-    * **Nombre**: `CryptoLive`
-    * **Tipo**: Maven
-    * **Versión de Java**: 17
-    * **Dependencias**:
+2. **Variables de Entorno**
 
-        * Spring Web
-        * Spring Data JPA
-        * Spring Security
-        * Spring WebSocket
-        * MySQL Driver
-        * Lombok (opcional)
-        * Spring Boot DevTools
-        * Spring Boot Actuator
+   - Crear archivo `.env` (no versionar) con:
+     ```dotenv
+     DATABASE_URL=jdbc:mysql://localhost:3306/cryptolive?useSSL=false&serverTimezone=UTC
+     DATABASE_USER=root
+     DATABASE_PASSWORD=root
+     JWT_SECRET=ClaveMuySeguraYLarga
+     GOOGLE_CLIENT_ID=tu_google_client_id
+     GOOGLE_CLIENT_SECRET=tu_google_client_secret
+     ```
+   - En `application.yml`, referenciar:
+     ```yaml
+     spring:
+       datasource:
+         url: ${DATABASE_URL}
+         username: ${DATABASE_USER}
+         password: ${DATABASE_PASSWORD}
+       jpa:
+         hibernate:
+           ddl-auto: update
+         show-sql: true
+       security:
+         oauth2:
+           client:
+             registration:
+               google:
+                 client-id: ${GOOGLE_CLIENT_ID}
+                 client-secret: ${GOOGLE_CLIENT_SECRET}
+                 scope: openid, profile, email
+     jwt:
+       secret: ${JWT_SECRET}
+       expiration-ms: 3600000
+     ```
+   - Asegúrate de que `.gitignore` incluya el `.env` y no incluya credenciales.
 
-### 2. Docker Compose para MySQL
+3. **Levantar servicios con Docker Compose**
 
-```yaml
-version: '3.8'
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: cryptolive-mysql
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cryptolive
-    volumes:
-      - mysql-data:/var/lib/mysql
-volumes:
-  mysql-data:
-```
+   - `docker-compose.yml` debe definir al menos:
+     - MySQL: usuario/clave `root`, base `cryptolive`
+     - Redis: para cache
+   - Ejecutar:
+     ```bash
+     docker-compose up -d
+     ```
 
-Lanza el servicio con:
+4. **Ejecutar la aplicación**
 
-```bash
-docker-compose up -d
-```
+   - Desde IntelliJ o línea de comando:
+     ```bash
+     mvn spring-boot:run
+     ```
+   - Verificar salud:
+     ```bash
+     curl http://localhost:8080/actuator/health
+     ```
 
-### 3. Configuración de la base de datos
+5. **Swagger UI**
 
-`src/main/resources/application.yml`
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/cryptolive?useSSL=false&serverTimezone=UTC
-    username: root
-    password: root
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-server:
-  port: 8080
-```
-
-### 4. Estructura de paquetes sugerida
-
-* `config` → configuraciones WebSocket, JWT, etc.
-* `controller` → endpoints REST y WebSocket
-* `service` → lógica de negocio
-* `model` → entidades y DTOs
-* `repository` → interfaces de persistencia
-* `security` → filtros y utilidades JWT
-* `websocket` → gestión de sesiones y precios en tiempo real
-
-### 5. Ejecutar la aplicación
-
-* Corre `CryptoLiveApplication` desde IntelliJ
-* Accede a `http://localhost:8080/actuator/health` para verificar estado
+   - Acceder en: `http://localhost:8080/swagger-ui.html` para explorar la API.
 
 ---
 
-## ✅ Próximos pasos
+## 📬 Resultados en Postman
 
-* Implementar conexión a CoinGecko API
-* Desarrollar controlador WebSocket para emitir precios
-* Construir servicios para compra/venta de criptos virtuales
-* Añadir autenticación completa con JWT
-* Configurar Swagger para la documentación de la API
+A continuación se muestran ejemplos visuales de las peticiones y respuestas en Postman para registro, login y CRUD de portafolio. Mantén estas capturas en la documentación o en el repositorio como referencia.
+
+### 1. Registro de Usuario
+
+- **Endpoint:** `POST /auth/signup`
+- **Validaciones:**
+  - Email no exista en BD
+  - Contraseña mínimo 8 caracteres
+  - Email contenga `@`
+![image](https://github.com/user-attachments/assets/4347da73-5a8b-41a3-94bf-6d4a8a9d4a83)
+
+
+
+### 2. Login de Usuario
+
+- **Endpoint:** `POST /auth/login`
+- **Respuesta:** JSON con el JWT que el frontend usará en futuras peticiones
+![image](https://github.com/user-attachments/assets/24b8279a-92ab-4663-9283-f62136153cf2)
+
+
+
+### 3. Añadir Moneda al Portafolio
+
+- **Endpoint:** `POST /api/portfolio/coins`
+- **Autorización:** Bearer Token con el JWT obtenido en login
+- **Body ejemplo:** `{ "coinId": "bitcoin", "quantity": 0.5 }`
+![image](https://github.com/user-attachments/assets/e798b65d-f2af-4fa9-b53f-a9f34020de7e)
+
+
+
+- **Header Autorización:**&#x20;
+- ![image](https://github.com/user-attachments/assets/08623655-2f9a-499f-9e65-e392d648af88)
+
+
+### 4. Ver Monedas en Portafolio
+
+- **Endpoint:** `GET /api/portfolio`
+- **Respuesta:** Lista de monedas con:
+  - `coinId`, `quantity`, `lastPrice`, `totalValue` (quantity \* lastPrice)
+  - Valor total del portafolio sumando todas las monedas
+![image](https://github.com/user-attachments/assets/43cdd92b-1653-4901-96d9-dfa1efb9ee0e)
+
+
+
+### 5. Editar Cantidad en Portafolio
+
+- **Endpoint:** `PUT /api/portfolio/coins/{coinId}`
+- **Body ejemplo:** `{ "quantity": 1.2 }`
+![image](https://github.com/user-attachments/assets/cb4d0522-1ee9-4bee-bd17-c27009ac977d)
+
+
+
+### 6. Eliminar Moneda del Portafolio
+
+- **Endpoint:** `DELETE /api/portfolio/coins/{coinId}`
+  ![image](https://github.com/user-attachments/assets/541e4888-c2a4-4094-a7cd-632cb6a40c12)
+
+
+
+
+> **Nota**: Asegúrate de incluir siempre en Headers la autorización: `Authorization: Bearer <JWT>` en las peticiones protegidas.
 
 ---
 
-**CryptoLive**: tu punto de partida para simular, aprender y construir sobre tecnologías modernas del ecosistema Spring y criptomonedas. 🚀
+## ✅ Próximos Pasos
+
+- **Conexión a CoinGecko API**: implementar búsquedas y obtención de precios agrupados con WebClient y manejar límites (cache y batch).
+- **WebSocket**: configurar broadcasting de precios en tiempo real si el frontend lo requiere.
+- **Servicios de portafolio**: lógica para cálculo de valor total y actualización programada cada 10s.
+- **Pruebas**: añadir unitarias e integración con Testcontainers para asegurar el comportamiento de portafolio.
+- **Monitorización**: integrar métricas y health checks para el módulo de portafolio.
+- **Documentación y ejemplos**: ampliar Swagger y colecciones de Postman / OpenAPI.
+
+---
+
+**CryptoLive** es tu backend de referencia para simular y gestionar inversiones en criptomonedas con buenas prácticas de desarrollo, seguridad y despliegue. 🚀
+
