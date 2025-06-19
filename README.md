@@ -169,7 +169,11 @@ server:
 
 **Ahora te voy a anseñar los reultados de llamadas que hace la aplicaion a traves de Postman
 
-*Resgitro de Usuario![image](https://github.com/user-attachments/assets/7650721b-f352-472b-8ec6-46c363473931)
+***Esto me permitira hacer un registro y login de usuarios, ademas ahere un CRUD de las monedas añadidas al portafolio
+
+*Resgitro de Usuario
+Tambien comprueba de el user no exista en Db ,de que el correro tenga minimo 8 carracteres y el correo tenga un @
+![image](https://github.com/user-attachments/assets/7650721b-f352-472b-8ec6-46c363473931)
 
 
 ## ✅ Próximos pasos
