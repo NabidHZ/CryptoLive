@@ -1,6 +1,7 @@
 // src/main/java/com/cryptolive/controller/AuthController.java
 package com.cryptolive.controller;
 
+import com.cryptolive.DTO.requests.RegisterRequest;
 import com.cryptolive.service.AuthService;
 import com.cryptolive.execption.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         try {
-            authService.register(email, password);
+            authService.register(request.email, request.password);
             return ResponseEntity.ok().body(new MessageResponse("Usuario registrado correctamente"));
         } catch (UserAlreadyExistsException | InvalidEmailException | WeakPasswordException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
