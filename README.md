@@ -14,7 +14,7 @@ CryptoLive ofrece:
 - **Gestión de portafolio**: Añadir, editar y eliminar criptomonedas indicando la cantidad que posee el usuario.
 - **Cálculo de valor**: Obtiene precios actuales desde la API pública de CoinGecko y calcula el valor de cada moneda y del portafolio.
 - **Proceso BATCH**: Tarea programada que refresca precios cada 30 segundos y actualiza el valor en la base de datos.
-- **WebSocket**: Emite cotizaciones en tiempo real a clientes suscritos (opcional para frontend dinámico).
+- **WebSocket**: Emite cotizaciones en tiempo real a clientes suscritos  (frontend dinámico).
 - **Historial y métricas**: Registro de operaciones y métricas de salud con Actuator, Micrometer, Prometheus y Grafana.
 
 La arquitectura está modularizada en capas (`controller`, `service`, `repository`, `model`, `security`, `websocket`, etc.) y emplea buenas prácticas como caché con Redis, migraciones con Flyway, resiliencia con Resilience4j, pruebas unitarias e integración con Testcontainers, y despliegue en Docker.
