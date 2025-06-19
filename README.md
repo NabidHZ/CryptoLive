@@ -165,6 +165,13 @@ server:
 
 ---
 
+### 6.Resultados en Postman
+
+**Ahora te voy a anseñar los reultados de llamadas que hace la aplicaion a traves de Postman
+
+*Resgitro de Usuario![image](https://github.com/user-attachments/assets/7650721b-f352-472b-8ec6-46c363473931)
+
+
 ## ✅ Próximos pasos
 
 * Implementar conexión a CoinGecko API
