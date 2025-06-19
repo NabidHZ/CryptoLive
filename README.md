@@ -29,9 +29,6 @@ La arquitectura está modularizada en capas (`controller`, `service`, `repositor
 - **Spring Security + JWT** y **OAuth2 (Google)**
 - **CoinGecko API** (llamadas agrupadas para optimizar límites)
 - **Spring WebSocket** para envío en tiempo real
-- **Flyway** para migraciones de esquema
-- **Resilience4j** para retry/circuit breaker en llamadas externas
-- **Micrometer + Prometheus + Grafana** para monitorización
 - **JUnit 5 + Mockito + Testcontainers** para pruebas
 - **Swagger/OpenAPI** para documentar la API
 - **GitHub Actions** para CI/CD
