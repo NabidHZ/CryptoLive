@@ -1,6 +1,7 @@
 // src/main/java/com/cryptolive/controller/AuthController.java
 package com.cryptolive.controller;
 
+import com.cryptolive.DTO.requests.LoginRequest;
 import com.cryptolive.DTO.requests.RegisterRequest;
 import com.cryptolive.service.AuthService;
 import com.cryptolive.execption.*;
@@ -15,19 +16,25 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            String jwt = authService.login(email, password);
+            String jwt = authService.login(request.email, request.password);
             return ResponseEntity.ok().body(new JwtResponse(jwt));
         } catch (UserNotFoundException | IncorrectPasswordException e) {
             return ResponseEntity.status(401).body(new ErrorResponse(e.getMessage()));
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(new ErrorResponse("Error de autenticación"));
-        }/*Un RespopnseEntity es una clse de spring que representa una repuesta HTTP completa
+        }
+    }
+    /*Un RespopnseEntity es una clse de spring que representa una repuesta HTTP completa
         el código de estado, los encabezados y el cuerpo de la respuesta. Permite controlar exactamente qué se
         devuelve al cliente desde un controlador REST,
         como el estado (por ejemplo, 200, 401, 400), los datos (en formato JSON, texto, etc.) */
-    }
+
+
+
+
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {

@@ -1,5 +1,6 @@
 package com.cryptolive.controller;
 
+import com.cryptolive.DTO.requests.AddCoinRequest;
 import com.cryptolive.model.PortfolioItem;
 import com.cryptolive.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,23 +36,15 @@ public class PortfolioController {
 
     // Endpoint para añadir una moneda al portafolio
     @PostMapping("/coins")
-    public ResponseEntity<?> addCoin(@RequestBody Map<String, Object> requestBody) {
-        String email = (String) requestBody.get("email");
-        String coinId = (String) requestBody.get("coinId");
-        BigDecimal quantity;
-
-        try {
-            quantity = new BigDecimal(requestBody.get("quantity").toString());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("La cantidad debe ser un número válido");
-        }
-
-        if (email == null || email.isEmpty() || coinId == null || coinId.isEmpty() || quantity.compareTo(BigDecimal.ZERO) <= 0) {
+    public ResponseEntity<?> addCoin(@RequestBody AddCoinRequest request) {
+        if (request.email == null || request.email.isEmpty() ||
+                request.coinId == null || request.coinId.isEmpty() ||
+                request.quantity == null || request.quantity.compareTo(BigDecimal.ZERO) <= 0) {
             return ResponseEntity.badRequest().body("Datos inválidos");
         }
 
         try {
-            PortfolioItem addedCoin = portfolioService.addCoin(email, coinId, quantity);
+            PortfolioItem addedCoin = portfolioService.addCoin(request.email, request.coinId, request.quantity);
             return ResponseEntity.ok("Moneda añadida correctamente");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
