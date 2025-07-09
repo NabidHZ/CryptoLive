@@ -36,6 +36,8 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
+
+
     /**
      * Genera un token JWT para un usuario dado.
      *

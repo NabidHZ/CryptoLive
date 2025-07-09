@@ -24,6 +24,15 @@ public class SecurityConfig {
     @Autowired
     private CustomOAuth2UserService customOAuth2UserService;
 
+
+    /**
+     * Configuración de seguridad para la aplicación.
+     * Define las reglas de autorización, manejo de sesiones y filtros de seguridad.
+     *
+     * @param http la configuración de seguridad HTTP
+     * @return el objeto SecurityFilterChain configurado
+     * @throws Exception si ocurre un error durante la configuración
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -44,6 +53,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Configuración de CORS para permitir solicitudes desde el cliente.
+     * Permite solicitudes desde "http://localhost:5173" y permite todos los métodos y encabezados.
+     *
+     * @return la fuente de configuración CORS
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
