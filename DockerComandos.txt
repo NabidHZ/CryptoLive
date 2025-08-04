@@ -2,6 +2,10 @@ CREAR MYSQL EN DOCKER
 docker run --name mysql-cryptolive -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=cryptolive -p 3307:3306 -d mysql:8.0
 
 
+
+docker exec -it mysql-cryptolive mysql -uroot -proot
+
+
 acceder a MySQL docker exec -it cryptolive-mysql mysql -uroot -proot -e "SHOW DATABASES;"
 
 

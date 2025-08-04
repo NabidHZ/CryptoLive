@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class CryptoLiveApplication {
 	public static void main(String[] args) {
+
 		SpringApplication.run(CryptoLiveApplication.class, args);
 	}
 }
