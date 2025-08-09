@@ -44,6 +44,15 @@ public class PortfolioService {
         item.setUser(user);
         item.setCoinId(coinId);
         item.setQuantity(quantity);
+
+        // Obtener el precio actual de la moneda
+        Map<String, BigDecimal> prices = getCryptoPrices(List.of(coinId));
+        BigDecimal price = prices.get(coinId);
+        if (price != null) {
+            item.setLastPrice(price);
+            item.setLastUpdated(java.time.LocalDateTime.now());
+        }
+
         portfolioRepository.save(item);
         return item;
     }

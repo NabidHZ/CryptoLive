@@ -32,8 +32,159 @@
 
   <!-- Portafolio del usuario -->
   <div style="width: 30%;">
-    <div th:replace="fragments/portfolio :: portfolio"></div>
+    <div style="background: #f8f8f8; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px #ccc;">
+      <h3>Tu Portafolio</h3>
+      <!-- Formulario para añadir moneda -->
+      <div id="addCoinContainer" style="margin-bottom: 1rem;">
+        <input type="text" id="coinIdInput" placeholder="ID de la moneda (ej: bitcoin)" />
+        <input type="number" id="coinQtyInput" placeholder="Cantidad" min="0.0001" step="any" />
+        <button id="addCoinBtn">Añadir</button>
+        <div id="addCoinError" style="color: red;"></div>
+      </div>
+      <!-- Tabla del portafolio -->
+      <table id="portfolioTable" style="width: 100%; border-collapse: collapse;">
+        <thead>
+        <tr style="background: #eee;">
+          <th>Cripto</th>
+          <th>Cantidad</th>
+          <th>Precio</th>
+          <th>Actualizado</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Se llenará por JS -->
+        </tbody>
+      </table>
+      <p><strong>Saldo actual:</strong> <span id="portfolioSaldo"></span> USD</p>
+    </div>
   </div>
 </div>
+
+<script>
+  async function fetchPortfolio() {
+    const jwt = localStorage.getItem('jwt');
+    const email = getEmailFromJWT(jwt);
+    if (!email) return;
+
+    const res = await fetch('/api/portfolio', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwt
+      },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      renderPortfolio(data.monedas);
+      document.getElementById('portfolioSaldo').innerText = data.saldoActual;
+    } else {
+      document.querySelector('#portfolioTable tbody').innerHTML = '<tr><td colspan="5">No hay monedas</td></tr>';
+      document.getElementById('portfolioSaldo').innerText = '0';
+    }
+  }
+
+  function renderPortfolio(monedas) {
+    const tbody = document.querySelector('#portfolioTable tbody');
+    tbody.innerHTML = '';
+    monedas.forEach(moneda => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+            <td>${moneda.coinId}</td>
+            <td>
+                <span>${moneda.quantity}</span>
+                <input type="number" style="display:none;" min="0.0001" step="any" value="${moneda.quantity}" />
+            </td>
+            <td>${moneda.lastPrice}</td>
+            <td>${moneda.lastUpdated ? new Date(moneda.lastUpdated).toLocaleString() : ''}</td>
+            <td>
+                <button onclick="editCoin(this, '${moneda.coinId}')">Editar</button>
+                <button onclick="deleteCoin('${moneda.coinId}')">Eliminar</button>
+            </td>
+        `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('addCoinBtn').onclick = async function() {
+    const coinId = document.getElementById('coinIdInput').value.trim();
+    const quantity = document.getElementById('coinQtyInput').value;
+    const jwt = localStorage.getItem('jwt');
+    const email = getEmailFromJWT(jwt);
+    if (!coinId || !quantity || !email) return;
+
+    const res = await fetch('/api/portfolio/coins', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwt
+      },
+      body: JSON.stringify({ email, coinId, quantity })
+    });
+    if (res.ok) {
+      fetchPortfolio();
+      document.getElementById('addCoinError').innerText = '';
+      document.getElementById('coinIdInput').value = '';
+      document.getElementById('coinQtyInput').value = '';
+    } else {
+      const err = await res.text();
+      document.getElementById('addCoinError').innerText = err;
+    }
+  };
+
+  window.editCoin = function(btn, coinId) {
+    const td = btn.parentElement.parentElement.children[1];
+    const span = td.querySelector('span');
+    const input = td.querySelector('input');
+    span.style.display = 'none';
+    input.style.display = 'inline';
+    btn.textContent = 'Guardar';
+    btn.onclick = async function() {
+      const quantity = input.value;
+      const jwt = localStorage.getItem('jwt');
+      const email = getEmailFromJWT(jwt);
+      const res = await fetch('/api/portfolio/coins', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt
+        },
+        body: JSON.stringify({ email, coinId, quantity })
+      });
+      if (res.ok) {
+        fetchPortfolio();
+      }
+    };
+  };
+
+  window.deleteCoin = async function(coinId) {
+    const jwt = localStorage.getItem('jwt');
+    const email = getEmailFromJWT(jwt);
+    const res = await fetch('/api/portfolio/coins', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwt
+      },
+      body: JSON.stringify({ email, coinId })
+    });
+    if (res.ok) {
+      fetchPortfolio();
+    }
+  };
+
+  // Decodifica el email del JWT (solo para ejemplo, usa una lib real en producción)
+  function getEmailFromJWT(token) {
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub;
+    } catch { return null; }
+  }
+
+  // Llama al cargar la página
+  document.addEventListener('DOMContentLoaded', fetchPortfolio);
+</script>
 </body>
 </html>
