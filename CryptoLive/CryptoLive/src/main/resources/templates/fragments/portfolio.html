@@ -1,0 +1,28 @@
+<!-- fragments/portfolio.html -->
+<div th:fragment="portfolio" style="background: #f8f8f8; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px #ccc;">
+  <h3>Tu Portafolio</h3>
+  <div th:if="${portfolio != null}">
+    <p><strong>Saldo actual:</strong> <span th:text="${portfolio.saldoActual}"></span> USD</p>
+    <table style="width: 100%; border-collapse: collapse;">
+      <thead>
+      <tr style="background: #eee;">
+        <th>Cripto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Actualizado</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="coin : ${portfolio.monedas}">
+        <td th:text="${coin.coinId}"></td>
+        <td th:text="${coin.quantity}"></td>
+        <td th:text="${coin.lastPrice}"></td>
+        <td th:text="${#dates.format(coin.lastUpdated, 'dd/MM/yyyy HH:mm')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div th:if="${portfolio == null}">
+    <p>Inicia sesión para ver tu portafolio.</p>
+  </div>
+</div>

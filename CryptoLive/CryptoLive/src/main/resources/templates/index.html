@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>CryptoLive - Top 20 Criptomonedas</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div style="display: flex; justify-content: space-between;">
+  <!-- Lista de criptomonedas -->
+  <div style="width: 65%;">
+    <h2>Top 20 Criptomonedas por Market Cap</h2>
+    <table>
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Market Cap</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="coin : ${top20}">
+        <td th:text="${coin.get('name')}"></td>
+        <td th:text="${coin.get('current_price')}"></td>
+        <td th:text="${coin.get('market_cap')}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Portafolio del usuario -->
+  <div style="width: 30%;">
+    <div th:replace="fragments/portfolio :: portfolio"></div>
+  </div>
+</div>
+</body>
+</html>

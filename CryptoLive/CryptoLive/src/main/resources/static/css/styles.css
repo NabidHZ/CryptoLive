@@ -1,0 +1,74 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f6fa;
+    margin: 0;
+    color: #222;
+}
+nav {
+    background: #222;
+    color: #fff;
+}
+h2, h3 {
+    color: #2a3a5e;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 8px #eee;
+}
+th, td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+th {
+    background: #f0f4fa;
+}
+tr:hover {
+    background: #f5f7fa;
+}
+.form-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #ccc;
+}
+label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+}
+input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+button {
+    background: #2a3a5e;
+    color: #fff;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+button:hover {
+    background: #1a2540;
+}
+.error {
+    color: #d32f2f;
+    margin-top: 1rem;
+}
+.success {
+    color: #388e3c;
+    margin-top: 1rem;
+}
+
