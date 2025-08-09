@@ -8,20 +8,45 @@
 <div th:replace="fragments/navbar :: navbar"></div>
 <div class="form-container">
     <h2>Registro</h2>
-    <form th:action="@{/register}" method="post">
+    <form id="registerForm">
         <label>Email:</label>
         <input type="email" name="email" required />
         <label>Contraseña:</label>
         <input type="password" name="password" required />
         <button type="submit">Registrarse</button>
     </form>
-    <div th:if="${error}">
-        <p class="error" th:text="${error}"></p>
-    </div>
-    <div th:if="${message}">
-        <p class="success" th:text="${message}"></p>
-    </div>
+    <div id="error" class="error"></div>
+    <div id="message" class="success"></div>
 </div>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const email = this.email.value;
+        const password = this.password.value;
+        const res = await fetch('/api/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, password})
+        });
+        if (res.ok) {
+            // Registro exitoso, ahora login automático
+            const loginRes = await fetch('/api/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            if (loginRes.ok) {
+                const data = await loginRes.json();
+                localStorage.setItem('jwt', data.token);
+                window.location.href = '/';
+            } else {
+                document.getElementById('error').innerText = 'Error al iniciar sesión después del registro';
+            }
+        } else {
+            const err = await res.json();
+            document.getElementById('error').innerText = err.error || 'Error de registro';
+        }
+    });
+</script>
 </body>
 </html>
-
